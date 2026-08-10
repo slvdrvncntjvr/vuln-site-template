@@ -1,0 +1,3 @@
+{
+  "_note": "Flag values are no longer loaded from this file. They are injected as environment variables (FLAG_IDOR, FLAG_SSRF, FLAG_SQLI, FLAG_LFI, FLAG_JWT, FLAG_CMDINJ) by the CTF organizer via Codespaces Secrets."
+}
