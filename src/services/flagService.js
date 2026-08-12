@@ -2,13 +2,14 @@ require("dotenv").config();
 const crypto = require("crypto");
 const { GM_TOKEN } = require("../config/securityConfig");
 
+// Opaque env-var names (FLAG1…FLAG6) — slot order matches the platform contract.
 const FLAGS = {
-  IDOR:   process.env.FLAG_IDOR   || "flag{idor_missing_env}",
-  SSRF:   process.env.FLAG_SSRF   || "flag{ssrf_missing_env}",
-  SQLI:   process.env.FLAG_SQLI   || "flag{sqli_missing_env}",
-  LFI:    process.env.FLAG_LFI    || "flag{lfi_missing_env}",
-  JWT:    process.env.FLAG_JWT    || "flag{jwt_missing_env}",
-  CMDINJ: process.env.FLAG_CMDINJ || "flag{cmdinj_missing_env}",
+  IDOR:   process.env.FLAG1 || "flag{flag1_missing_env}",
+  SSRF:   process.env.FLAG2 || "flag{flag2_missing_env}",
+  SQLI:   process.env.FLAG3 || "flag{flag3_missing_env}",
+  LFI:    process.env.FLAG4 || "flag{flag4_missing_env}",
+  JWT:    process.env.FLAG5 || "flag{flag5_missing_env}",
+  CMDINJ: process.env.FLAG6 || "flag{flag6_missing_env}",
 };
 
 class FlagService {
