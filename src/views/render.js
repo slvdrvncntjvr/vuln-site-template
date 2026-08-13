@@ -23,7 +23,7 @@ function layout(title, content, opts = {}) {
   const { user, cartCount = 0 } = opts;
   const staffLink =
     user && user.role === "ADMINISTRATOR"
-      ? `<a href="/staff">Staff</a>`
+      ? `<a href="/staff">Operations</a>`
       : "";
   const authLinks = user
     ? `<a href="/account">Account</a><a href="/logout">Logout</a>${staffLink}`
@@ -41,6 +41,7 @@ function layout(title, content, opts = {}) {
   <header class="topbar">
     <div class="topbar-inner">
       <a class="brand" href="/"><span class="brand-mark">A</span>Acme Shop</a>
+      <div class="topbar-copy">Cartoons-grade gear for teams, tinkers, and support desks.</div>
       <nav class="nav">
         <a href="/">Catalog</a>
         <a href="/cart" class="cart-pill">Cart · ${cartCount}</a>
