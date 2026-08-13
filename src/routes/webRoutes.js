@@ -8,7 +8,7 @@ const previewService = require("../services/previewService");
 const diagnosticsService = require("../services/diagnosticsService");
 const adminService = require("../services/adminService");
 const sessionLib = require("../middleware/session");
-const { esc, money, layout } = require("../views/render");
+const { esc, money, layout, productArtClass } = require("../views/render");
 
 const router = express.Router();
 
@@ -48,13 +48,18 @@ router.get("/", (req, res) => {
     .map(
       (p) => `
     <article class="card product-card">
-      <div style="display:flex;justify-content:space-between;align-items:center;">
+      <div class="product-art ${productArtClass(p.category)}">
         <span class="badge">${esc(p.tag)}</span>
-        <span class="price">${money(p.price)}</span>
       </div>
-      <h3>${esc(p.name)}</h3>
-      <p>${esc(p.description)}</p>
-      <a class="btn btn-secondary btn-block" href="/products/${p.id}">View product</a>
+      <div class="product-body">
+        <div class="product-meta">
+          <span class="text-muted" style="color:var(--muted);font-size:0.8rem;">${esc(p.category)}</span>
+          <span class="price">${money(p.price)}</span>
+        </div>
+        <h3>${esc(p.name)}</h3>
+        <p>${esc(p.description)}</p>
+        <a class="btn btn-secondary btn-block" href="/products/${p.id}">View product</a>
+      </div>
     </article>`
     )
     .join("");
@@ -63,8 +68,9 @@ router.get("/", (req, res) => {
     "Catalog",
     `
     <div class="hero">
-      <h1>Acme Shop</h1>
-      <p>Anvils, rocket boots, and impossible gadgets — shipped worldwide.</p>
+      <div class="hero-badge">Official storefront</div>
+      <h1>Impossible gear,<br/>delivered worldwide.</h1>
+      <p>Anvils, rocket boots, portable holes — everything your cartoon enterprise needs.</p>
     </div>
     <div class="card">
       <form method="GET" action="/" class="split">
@@ -89,19 +95,24 @@ router.get("/products/:id", (req, res) => {
     res,
     product.name,
     `
-    <div class="card">
-      <span class="badge">${esc(product.tag)}</span>
-      <h1 style="margin:0.75rem 0 0.5rem;">${esc(product.name)}</h1>
-      <p style="color:var(--muted);margin-bottom:1rem;">${esc(product.description)}</p>
-      <p class="price" style="margin-bottom:1.25rem;">${money(product.price)} · ${product.stock} in stock</p>
-      <form method="POST" action="/cart/add" class="split">
-        <input type="hidden" name="productId" value="${product.id}" />
-        <div class="form-row" style="margin:0;width:5rem;">
-          <label for="qty">Qty</label>
-          <input class="input" id="qty" name="qty" type="number" min="1" value="1" />
-        </div>
-        <button class="btn" type="submit">Add to cart</button>
-      </form>
+    <div class="card product-card" style="max-width:720px;margin:0 auto;">
+      <div class="product-art ${productArtClass(product.category)}" style="height:200px;">
+        <span class="badge">${esc(product.tag)}</span>
+      </div>
+      <div class="product-body">
+        <p style="color:var(--muted);font-size:0.85rem;margin-bottom:0.35rem;">${esc(product.category)}</p>
+        <h1 style="margin-bottom:0.5rem;letter-spacing:-0.03em;">${esc(product.name)}</h1>
+        <p style="color:var(--muted);margin-bottom:1rem;">${esc(product.description)}</p>
+        <p class="price" style="margin-bottom:1.25rem;">${money(product.price)} · ${product.stock} in stock</p>
+        <form method="POST" action="/cart/add" class="split">
+          <input type="hidden" name="productId" value="${product.id}" />
+          <div class="form-row" style="margin:0;width:5rem;">
+            <label for="qty">Qty</label>
+            <input class="input" id="qty" name="qty" type="number" min="1" value="1" />
+          </div>
+          <button class="btn" type="submit">Add to cart</button>
+        </form>
+      </div>
     </div>`,
     req
   );
@@ -115,7 +126,8 @@ router.get("/login", (req, res) => {
     "Sign in",
     `
     ${err}
-    <div class="card" style="max-width:400px;margin:0 auto;">
+    <div class="auth-shell">
+    <div class="card">
       <h2 style="margin-bottom:0.5rem;">Sign in</h2>
       <p style="color:var(--muted);margin-bottom:1rem;font-size:0.9rem;">Access your orders and checkout faster.</p>
       <form method="POST" action="/login">
@@ -130,6 +142,7 @@ router.get("/login", (req, res) => {
         </div>
         <button class="btn btn-block" type="submit">Sign in</button>
       </form>
+    </div>
     </div>`,
     req
   );
@@ -283,7 +296,7 @@ router.get("/staff", requireStaff, (req, res) => {
     "Staff",
     `
     <div class="hero"><h1>Staff tools</h1><p>Internal utilities for merchandising and support.</p></div>
-    <div class="grid">
+    <div class="grid staff-grid">
       <a class="card" href="/staff/preview" style="text-decoration:none;color:inherit;">
         <h3>URL preview</h3>
         <p style="color:var(--muted);font-size:0.9rem;">Validate supplier and asset URLs before publishing.</p>
