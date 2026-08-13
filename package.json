@@ -1,7 +1,7 @@
 {
   "name": "acme-shop-target",
-  "version": "2.0.0",
-  "description": "Acme Corporation E-Commerce Platform Target Application",
+  "version": "3.0.0",
+  "description": "Acme Shop — CTF blue team target application",
   "main": "src/app.js",
   "scripts": {
     "start": "node src/app.js",

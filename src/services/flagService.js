@@ -2,18 +2,24 @@ require("dotenv").config();
 const crypto = require("crypto");
 const { GM_TOKEN } = require("../config/securityConfig");
 
-const FLAGS = {
-  IDOR:   process.env.FLAG_IDOR   || "flag{idor_missing_env}",
-  SSRF:   process.env.FLAG_SSRF   || "flag{ssrf_missing_env}",
-  SQLI:   process.env.FLAG_SQLI   || "flag{sqli_missing_env}",
-  LFI:    process.env.FLAG_LFI    || "flag{lfi_missing_env}",
-  JWT:    process.env.FLAG_JWT    || "flag{jwt_missing_env}",
-  CMDINJ: process.env.FLAG_CMDINJ || "flag{cmdinj_missing_env}",
+const SLOTS = ["FLAG1", "FLAG2", "FLAG3", "FLAG4", "FLAG5", "FLAG6"];
+
+const VALUES = Object.fromEntries(
+  SLOTS.map((name) => [name, process.env[name] || ""])
+);
+
+const GRADER_KEYS = {
+  IDOR: "FLAG1",
+  SSRF: "FLAG2",
+  SQLI: "FLAG3",
+  LFI: "FLAG4",
+  JWT: "FLAG5",
+  CMDINJ: "FLAG6",
 };
 
 class FlagService {
-  getFlag(key) {
-    return FLAGS[key] || "";
+  getSlot(name) {
+    return VALUES[name] || "";
   }
 
   sha256(value) {
@@ -21,20 +27,21 @@ class FlagService {
   }
 
   verifyFlagHash(authHeader, vulnId, submittedHash) {
-    const token = authHeader && authHeader.startsWith("Bearer ") ? authHeader.slice(7) : null;
+    const token =
+      authHeader && authHeader.startsWith("Bearer ")
+        ? authHeader.slice(7)
+        : null;
     if (!token || token !== GM_TOKEN) {
       return { status: 401, data: { error: "Unauthorized request" } };
     }
-
     if (!vulnId || !submittedHash) {
       return { status: 400, data: { error: "Missing parameters" } };
     }
-
-    const currentFlag = this.getFlag(vulnId);
+    const slot = GRADER_KEYS[vulnId];
+    const currentFlag = slot ? VALUES[slot] : "";
     if (!currentFlag) {
       return { status: 200, data: { match: false } };
     }
-
     const expected = this.sha256(currentFlag);
     return { status: 200, data: { match: expected === submittedHash } };
   }

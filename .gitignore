@@ -1,18 +1,5 @@
-# Dependencies
 node_modules/
-
-# Environment variables — NEVER commit real flag values
 .env
 .env.local
-.env.production
-
-# Internal testing & development tools
-test-exploits.js
-
-# OS artifacts
-.DS_Store
-Thumbs.db
-
-# Editor settings
-.vscode/
-.idea/
+secret.txt
+scripts/staff-smoke.js

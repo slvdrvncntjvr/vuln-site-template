@@ -1,12 +1,20 @@
-Welcome to Acme Shop documentation.
+Acme Shop — Help Center
+========================
 
-Version: 2.0.0
-Last Updated: 2026-01-10
+Getting started
+---------------
+Browse the catalog, add items to your cart, sign in, and complete checkout.
+Order history appears under Account after purchase.
 
-Endpoints:
-  GET /api/products/search?q=<query>   - Search the product catalog
-  GET /api/users/:id/profile           - View a customer profile
-  GET /api/admin/secret                - Admin management gateway (requires JWT)
-  GET /api/ping?host=<host>            - Network diagnostic ping
-  GET /api/fetch?url=<url>             - External resource preview tool
-  GET /api/files?path=<path>           - Documentation file viewer
+Shipping
+--------
+Standard delivery via Acme Rocket Courier. Express holes available at checkout
+for eligible regions.
+
+Support
+-------
+For order issues, contact support@acmeshop.example with your order ID.
+
+Staff
+-----
+Internal tools are available to administrator accounts after sign-in.

@@ -1,25 +1,32 @@
-# Acme Shop — Attack/Defend CTF Blue Team Target
+# Acme Shop
 
-Welcome Blue Team Defenders! This repository is your team's target web application.
+Blue team target application for the SEEN Cyber Rumble CTF.
 
----
+## Quick start (Codespaces)
 
-## 🚀 Quick Start (GitHub Codespaces)
+1. Create a Codespace from this repository.
+2. Set **Codespace secrets** from your organizer env block (`FLAG1`–`FLAG6`, `GM_TOKEN`).
+3. Ensure port **3000** is **Public** in the Ports tab.
+4. Submit your repo URL and Codespace URL on the CTF platform.
 
-1. Click **Code** → **Codespaces** → **Create codespace on main**.
-2. Wait for the environment to build. Node.js dependencies and the application will start automatically.
-3. Open the **Ports** tab in Codespaces, ensure port `3000` visibility is set to **Public**, and copy your forwarded URL (e.g. `https://your-codespace-xxx.github.dev`).
-4. Log into the CTF Platform (`/play`) and submit your repository URL and Codespaces URL under **Submit Target**.
+The app starts automatically via the devcontainer. Open the forwarded URL to use the shop.
 
----
+## Your mission
 
-## 🛡️ Your Mission
+Deploy this application, paste the flag environment variables, patch security issues during the hardening window, and keep the site working for legitimate customers.
 
-Your application contains **6 planted vulnerabilities**. Your goal during the **Hardening Phase** is to identify and patch these vulnerabilities without breaking legitimate application features.
+## Rules
 
----
+- Do **not** remove or disable `POST /__gm/verify`.
+- Do **not** delete or blank flag environment variables in production.
+- Keep catalog search, checkout, account, and help features working after your changes.
 
-## ⚠️ Anti-Cheat Rules
+## Local development
 
-- Do **NOT** delete `src/flags.json` or modify the internal `/__gm/verify` endpoint.
-- The CTF Defense Grader will probe your target URL during judging to verify that flags are intact and functionality remains active.
+```bash
+cp .env.example .env
+npm install
+npm start
+```
+
+Visit `http://localhost:3000`.
