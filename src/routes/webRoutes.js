@@ -70,28 +70,7 @@ router.get("/", (req, res) => {
     <div class="hero">
       <div class="hero-badge">Official storefront</div>
       <h1>Impossible gear,<br/>delivered worldwide.</h1>
-      <p>A small, fast storefront for merchandise, support, and operations teams.</p>
-      <div class="hero-actions">
-        <a class="btn" href="/products/1">Browse catalog</a>
-        <a class="btn btn-secondary" href="/help">Open help center</a>
-      </div>
-    </div>
-    <div class="feature-grid">
-      <div class="card feature-card">
-        <span class="badge">Fast</span>
-        <h3>Built for quick browsing</h3>
-        <p>Search, compare, and add items without waiting on a heavy backend.</p>
-      </div>
-      <div class="card feature-card">
-        <span class="badge">Reliable</span>
-        <h3>Orders stay with your account</h3>
-        <p>Checkout writes directly into your profile so you can revisit purchases later.</p>
-      </div>
-      <div class="card feature-card">
-        <span class="badge">Support</span>
-        <h3>Help and internal tools</h3>
-        <p>Docs, diagnostics, and URL checks stay in one place for the staff team.</p>
-      </div>
+      <p>Anvils, rocket boots, portable holes — everything your cartoon enterprise needs.</p>
     </div>
     <div class="card">
       <form method="GET" action="/" class="split">
@@ -123,7 +102,7 @@ router.get("/products/:id", (req, res) => {
       <div class="product-body">
         <p style="color:var(--muted);font-size:0.85rem;margin-bottom:0.35rem;">${esc(product.category)}</p>
         <h1 style="margin-bottom:0.5rem;letter-spacing:-0.03em;">${esc(product.name)}</h1>
-        <p style="color:var(--muted);margin-bottom:1rem;max-width:54ch;">${esc(product.description)}</p>
+        <p style="color:var(--muted);margin-bottom:1rem;">${esc(product.description)}</p>
         <p class="price" style="margin-bottom:1.25rem;">${money(product.price)} · ${product.stock} in stock</p>
         <form method="POST" action="/cart/add" class="split">
           <input type="hidden" name="productId" value="${product.id}" />
@@ -148,10 +127,9 @@ router.get("/login", (req, res) => {
     `
     ${err}
     <div class="auth-shell">
-    <div class="card auth-card">
-      <div class="hero-badge" style="margin-bottom:0.85rem;">Account access</div>
+    <div class="card">
       <h2 style="margin-bottom:0.5rem;">Sign in</h2>
-      <p style="color:var(--muted);margin-bottom:1rem;font-size:0.95rem;max-width:28rem;">Use your account to checkout, review order history, and keep cart state tied to one session.</p>
+      <p style="color:var(--muted);margin-bottom:1rem;font-size:0.9rem;">Access your orders and checkout faster.</p>
       <form method="POST" action="/login">
         <input type="hidden" name="next" value="${esc(req.query.next || "/")}" />
         <div class="form-row">
@@ -205,7 +183,7 @@ router.get("/cart", (req, res) => {
   const cart = req.session ? cartService.getCart(req.session) : [];
   const rows =
     cart.length === 0
-      ? `<div class="empty-state"><p style="color:var(--muted);">Your cart is empty.</p><a class="btn btn-secondary" href="/">Return to catalog</a></div>`
+      ? `<p style="color:var(--muted);">Your cart is empty.</p>`
       : `<table>
         <thead><tr><th>Item</th><th>Qty</th><th>Price</th><th></th></tr></thead>
         <tbody>${cart
@@ -223,7 +201,7 @@ router.get("/cart", (req, res) => {
             <td>${money(line.price * line.qty)}</td>
           </tr>`
           )
-          .join("")}</tbody></table><div class="cart-summary">${money(cartService.cartTotal(cart))}</div>`;
+          .join("")}</tbody></table>`;
   const checkout =
     cart.length > 0 && req.user
       ? `<form method="POST" action="/checkout"><button class="btn" type="submit">Checkout</button></form>`
@@ -274,24 +252,14 @@ router.get("/account", requireLogin, (req, res) => {
     res,
     "Account",
     `
-    <div class="account-shell">
-      <div class="card account-panel">
-        <div class="hero-badge" style="margin-bottom:0.85rem;">Profile</div>
-        <h2 style="margin-bottom:0.25rem;">${esc(profile.fullName)}</h2>
-        <p style="color:var(--muted);margin-bottom:1rem;">@${esc(profile.username)}</p>
-        <div class="account-meta">
-          <span>Email</span><strong>${esc(profile.email)}</strong>
-          <span>Member since</span><strong>${esc(profile.memberSince || "N/A")}</strong>
-          <span>Role</span><strong>${esc(profile.role)}</strong>
-        </div>
-      </div>
-      <div class="card">
-        <h3 style="margin-bottom:0.75rem;">Order history</h3>
-        <table>
-          <thead><tr><th>Order</th><th>Items</th><th>Total</th><th>Status</th></tr></thead>
-          <tbody>${orders}</tbody>
-        </table>
-      </div>
+    <div class="card">
+      <h2 style="margin-bottom:0.25rem;">${esc(profile.fullName)}</h2>
+      <p style="color:var(--muted);margin-bottom:1rem;">@${esc(profile.username)} · ${esc(profile.email)}</p>
+      <h3 style="margin-bottom:0.75rem;">Order history</h3>
+      <table>
+        <thead><tr><th>Order</th><th>Items</th><th>Total</th><th>Status</th></tr></thead>
+        <tbody>${orders}</tbody>
+      </table>
     </div>`,
     req
   );
@@ -308,8 +276,7 @@ router.get("/help", (req, res) => {
     "Help",
     `
     <div class="card">
-      <h2 style="margin-bottom:0.35rem;">Help center</h2>
-      <p style="color:var(--muted);margin-bottom:1rem;">Open a document from the support library.</p>
+      <h2 style="margin-bottom:0.75rem;">Help center</h2>
       <form method="GET" action="/help" class="split">
         <div class="form-row" style="flex:1;margin:0;">
           <label for="doc">Document</label>
@@ -326,21 +293,21 @@ router.get("/help", (req, res) => {
 router.get("/staff", requireStaff, (req, res) => {
   page(
     res,
-    "Operations",
+    "Staff",
     `
-    <div class="hero"><h1>Internal tools</h1><p>Utilities for merchandising, support, and operations.</p></div>
+    <div class="hero"><h1>Staff tools</h1><p>Internal utilities for merchandising and support.</p></div>
     <div class="grid staff-grid">
       <a class="card" href="/staff/preview" style="text-decoration:none;color:inherit;">
-        <h3>Supplier preview</h3>
-        <p style="color:var(--muted);font-size:0.9rem;">Inspect supplier and asset URLs before publishing.</p>
+        <h3>URL preview</h3>
+        <p style="color:var(--muted);font-size:0.9rem;">Validate supplier and asset URLs before publishing.</p>
       </a>
       <a class="card" href="/staff/diagnostics" style="text-decoration:none;color:inherit;">
-        <h3>Connection check</h3>
-        <p style="color:var(--muted);font-size:0.9rem;">Check hosts reported in support tickets.</p>
+        <h3>Network diagnostics</h3>
+        <p style="color:var(--muted);font-size:0.9rem;">Ping hosts reported in support tickets.</p>
       </a>
       <a class="card" href="/staff/admin" style="text-decoration:none;color:inherit;">
-        <h3>Admin console</h3>
-        <p style="color:var(--muted);font-size:0.9rem;">Access internal account and token tooling.</p>
+        <h3>Operations API</h3>
+        <p style="color:var(--muted);font-size:0.9rem;">Verify service tokens against the admin API.</p>
       </a>
     </div>`,
     req
@@ -356,11 +323,10 @@ router.get("/staff/preview", requireStaff, async (req, res) => {
   }
   page(
     res,
-    "Supplier preview",
+    "URL preview",
     `
     <div class="card">
-      <h2>Supplier preview</h2>
-      <p style="color:var(--muted);margin-bottom:1rem;">Inspect a remote asset before publishing it.</p>
+      <h2>URL preview</h2>
       <form method="GET" action="/staff/preview" class="split">
         <div class="form-row" style="flex:1;margin:0;">
           <label for="url">Remote URL</label>
@@ -381,11 +347,10 @@ router.get("/staff/diagnostics", requireStaff, (req, res) => {
   }
   page(
     res,
-    "Connection check",
+    "Diagnostics",
     `
     <div class="card">
-      <h2>Connection check</h2>
-      <p style="color:var(--muted);margin-bottom:1rem;">Verify a support-reported host before escalation.</p>
+      <h2>Network diagnostics</h2>
       <form method="GET" action="/staff/diagnostics" class="split">
         <div class="form-row" style="flex:1;margin:0;">
           <label for="host">Host</label>
@@ -401,16 +366,16 @@ router.get("/staff/diagnostics", requireStaff, (req, res) => {
 router.get("/staff/admin", requireStaff, (req, res) => {
   page(
     res,
-    "Admin console",
+    "Operations API",
     `
     <div class="card">
-      <h2>Admin console</h2>
-      <p style="color:var(--muted);margin-bottom:1rem;font-size:0.9rem;">Enter an access token to load the internal dashboard.</p>
+      <h2>Operations API</h2>
+      <p style="color:var(--muted);margin-bottom:1rem;font-size:0.9rem;">Paste a bearer token to query <code>/api/admin/secret</code>.</p>
       <div class="form-row">
-        <label for="token">Access token</label>
-        <input class="input" id="token" placeholder="Token..." />
+        <label for="token">Bearer token</label>
+        <input class="input" id="token" placeholder="JWT..." />
       </div>
-      <button class="btn" type="button" id="run">Open console</button>
+      <button class="btn" type="button" id="run">Query API</button>
     </div>
     <div class="card" id="out" style="display:none;"><pre id="outtext"></pre></div>
     <script>
