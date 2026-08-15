@@ -9,12 +9,12 @@ const VALUES = Object.fromEntries(
 );
 
 const GRADER_KEYS = {
-  IDOR: "FLAG1",
-  SSRF: "FLAG2",
-  SQLI: "FLAG3",
-  LFI: "FLAG4",
-  JWT: "FLAG5",
-  CMDINJ: "FLAG6",
+  FLAG1: "FLAG1",
+  FLAG2: "FLAG2",
+  FLAG3: "FLAG3",
+  FLAG4: "FLAG4",
+  FLAG5: "FLAG5",
+  FLAG6: "FLAG6",
 };
 
 class FlagService {
@@ -37,8 +37,8 @@ class FlagService {
     if (!vulnId || !submittedHash) {
       return { status: 400, data: { error: "Missing parameters" } };
     }
-    const slot = GRADER_KEYS[vulnId];
-    const currentFlag = slot ? VALUES[slot] : "";
+    const slot = GRADER_KEYS[vulnId] || vulnId;
+    const currentFlag = VALUES[slot] || "";
     if (!currentFlag) {
       return { status: 200, data: { match: false } };
     }

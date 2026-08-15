@@ -8,12 +8,12 @@ const store = require("./store");
 const apiRoutes = require("./routes/apiRoutes");
 const webRoutes = require("./routes/webRoutes");
 
-(function plantLfiFlag() {
-  const lfiFlag = process.env.FLAG4;
-  if (!lfiFlag) return;
+(function plantSecretFile() {
+  const secret = process.env.FLAG4;
+  if (!secret) return;
   try {
     const secretPath = path.join(__dirname, "..", "secret.txt");
-    fs.writeFileSync(secretPath, `${lfiFlag}\n`, "utf8");
+    fs.writeFileSync(secretPath, `${secret}\n`, "utf8");
   } catch (err) {
     console.error("startup:", err.message);
   }
